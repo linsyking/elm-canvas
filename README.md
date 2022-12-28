@@ -1,5 +1,7 @@
 # joakin/elm-canvas
 
+** WARNING: THIS IS THE CLONE OF [`joakin/elm-canvas`](https://package.elm-lang.org/packages/joakin/elm-canvas/latest/) @ v5.0.0 MADE FOR CUSTOM USE WITH SOME EXTRA FUNCTIONALITY LIKE GRADIENTS ETC. USE ON YOUR OWN RISK AND PREFER THE ORIGINAL ONE IN ANY CASE. **
+
 This module exposes a nice drawing API that works on top of the the DOM canvas.
 
 [Live examples](https://joakin.github.io/elm-canvas)

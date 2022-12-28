@@ -681,36 +681,36 @@ renderTextDrawOp drawOp txt cmds =
                 |> renderTextFill txt x y Nothing
                 |> renderTextStroke txt x y Nothing
 
-        Fill c ->
-            renderTextFill txt x y (Just c) cmds
+        Fill fill ->
+            renderTextFill txt x y (Just fill) cmds
 
-        Stroke c ->
-            renderTextStroke txt x y (Just c) cmds
+        Stroke stroke ->
+            renderTextStroke txt x y (Just stroke) cmds
 
-        FillAndStroke fc sc ->
+        FillAndStroke fill stroke ->
             cmds
-                |> renderTextFill txt x y (Just fc)
-                |> renderTextStroke txt x y (Just sc)
+                |> renderTextFill txt x y (Just fill)
+                |> renderTextStroke txt x y (Just stroke)
 
 
-renderTextFill : Text -> Float -> Float -> Maybe Color -> Commands -> Commands
-renderTextFill txt x y maybeColor cmds =
+renderTextFill : Text -> Float -> Float -> Maybe CE.Style -> Commands -> Commands
+renderTextFill txt x y maybeStyle cmds =
     CE.fillText txt.text x y txt.maxWidth
-        :: (case maybeColor of
-                Just color ->
-                    CE.fillStyle color :: cmds
+        :: (case maybeStyle of
+                Just style ->
+                    CE.fillStyleEx style :: cmds
 
                 Nothing ->
                     cmds
            )
 
 
-renderTextStroke : Text -> Float -> Float -> Maybe Color -> Commands -> Commands
-renderTextStroke txt x y maybeColor cmds =
+renderTextStroke : Text -> Float -> Float -> Maybe CE.Style -> Commands -> Commands
+renderTextStroke txt x y maybeStyle cmds =
     CE.strokeText txt.text x y txt.maxWidth
-        :: (case maybeColor of
-                Just color ->
-                    CE.strokeStyle color :: cmds
+        :: (case maybeStyle of
+                Just style ->
+                    CE.strokeStyleEx style :: cmds
 
                 Nothing ->
                     cmds
@@ -737,24 +737,24 @@ renderShapeDrawOp drawOp cmds =
                 |> renderShapeStroke (Just sc)
 
 
-renderShapeFill : Maybe Color -> Commands -> Commands
-renderShapeFill maybeColor cmds =
+renderShapeFill : Maybe CE.Style -> Commands -> Commands
+renderShapeFill maybeStyle cmds =
     CE.fill CE.NonZero
-        :: (case maybeColor of
-                Just color ->
-                    CE.fillStyle color :: cmds
+        :: (case maybeStyle of
+                Just style ->
+                    CE.fillStyleEx style :: cmds
 
                 Nothing ->
                     cmds
            )
 
 
-renderShapeStroke : Maybe Color -> Commands -> Commands
-renderShapeStroke maybeColor cmds =
+renderShapeStroke : Maybe CE.Style -> Commands -> Commands
+renderShapeStroke maybeStyle cmds =
     CE.stroke
-        :: (case maybeColor of
-                Just color ->
-                    CE.strokeStyle color :: cmds
+        :: (case maybeStyle of
+                Just style ->
+                    CE.strokeStyleEx style :: cmds
 
                 Nothing ->
                     cmds
@@ -795,13 +795,13 @@ renderGroup drawOp renderables cmds =
                 NotSpecified ->
                     cmds
 
-                Fill c ->
-                    CE.fillStyle c :: cmds
+                Fill fill ->
+                    CE.fillStyleEx fill :: cmds
 
-                Stroke c ->
-                    CE.strokeStyle c :: cmds
+                Stroke stroke ->
+                    CE.strokeStyleEx stroke :: cmds
 
                 FillAndStroke fc sc ->
-                    CE.fillStyle fc :: CE.strokeStyle sc :: cmds
+                    CE.fillStyleEx fc :: CE.strokeStyleEx sc :: cmds
     in
     List.foldl (renderOne drawOp) cmdsWithDraw renderables

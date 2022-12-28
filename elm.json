@@ -1,6 +1,6 @@
 {
     "type": "package",
-    "name": "joakin/elm-canvas",
+    "name": "shamansir/elm-canvas",
     "summary": "2D drawing API based on DOM Canvas, but nicer",
     "license": "BSD-3-Clause",
     "version": "5.0.0",

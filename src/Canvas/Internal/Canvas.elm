@@ -27,9 +27,9 @@ type Setting
 
 type DrawOp
     = NotSpecified
-    | Fill Color
-    | Stroke Color
-    | FillAndStroke Color Color
+    | Fill C.Style
+    | Stroke C.Style
+    | FillAndStroke C.Style C.Style
 
 
 type Drawable

@@ -66,7 +66,7 @@ and then import it in.
 -}
 fill : Color -> Setting
 fill color =
-    SettingDrawOp (Fill color)
+    SettingDrawOp (Fill <| CE.Color color)
 
 
 {-| By default, renderables are drawn with no visible stroke. If you want to
@@ -95,4 +95,4 @@ If you want to modify the appearance of the stroke line, you can use other
 stroke : Color -> Setting
 stroke color =
     SettingDrawOp
-        (Stroke color)
+        (Stroke <| CE.Color color)

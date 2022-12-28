@@ -1,6 +1,6 @@
 module Canvas.Internal.CustomElementJsonApi exposing
     ( Commands, empty
-    , fillStyle, strokeStyle
+    , Style(..), fillStyle, fillStyleEx, strokeStyle, strokeStyleEx
     , font, textAlign, textBaseline, fillText, strokeText
     , fillRect, strokeRect, clearRect, roundRect
     , beginPath, closePath, FillRule(..), fill, clip, stroke, arc, arcTo, bezierCurveTo, lineTo, moveTo, quadraticCurveTo, rect, circle
@@ -97,22 +97,91 @@ empty =
     []
 
 
+type Style
+    = Color Color
+    | LinearGradient
+        { x0 : Float, y0 : Float, x1 : Float, y1 : Float }
+        (List ( Float, Color ))
+    | RadialGradient
+        { x0 : Float, y0 : Float, rad0 : Float, x1 : Float, y1 : Float, rad1 : Float }
+        (List ( Float, Color ))
+    -- TODO: Pattern
+
+
+encodeStyle : String -> Style -> Command
+encodeStyle fieldKey style =
+    let
+        adaptStops =
+            List.map
+                <| fn "addColorStop"
+                    << (\(offset, color) -> [ offset, color ])
+                    << Tuple.mapBoth float (Color.toCssString >> string)
+
+    in case style of
+
+        Color color ->
+            color
+                |> Color.toCssString
+                |> string
+                |> field fieldKey
+
+        LinearGradient spec stops ->
+            var
+                fieldKey
+                ( fn "createLinearGradient"
+                    [ float spec.x0
+                    , float spec.y0
+                    , float spec.x1
+                    , float spec.y1
+                    ]
+                )
+                <| adaptStops stops
+
+        RadialGradient spec stops ->
+            var
+                fieldKey
+                ( fn "createRadialGradient"
+                    [ float spec.x0
+                    , float spec.y0
+                    , float spec.rad0
+                    , float spec.x1
+                    , float spec.y1
+                    , float spec.rad1
+                    ]
+                )
+                <| adaptStops stops
+
 
 -- Properties
 
 
-{-| Specifies the color or style to use inside shapes. The default is #000
+{-| Specifies the color to use inside shapes. The default is #000
 (black). [MDN Docs](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle)
 
     empty |> fillStyle (Color.rgba 125 200 255 0.6)
 
 -}
 fillStyle : Color -> Command
-fillStyle color =
-    color
-        |> Color.toCssString
-        |> string
-        |> field "fillStyle"
+fillStyle =
+    fillStyleEx << Color
+
+
+{-| Specifies the color or style to use inside shapes. The default is #000
+(black). [MDN Docs](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle)
+
+    empty |> fillStyleEx
+        ( LinearGradient
+            { x0 = 0, x1 = 100, y0 = 1, y1 = 100 }
+            [ ( 0,   Color.black )
+            , ( 0.5, Color.blue  )
+            , ( 1.0, Color.white )
+            ]
+        )
+
+-}
+fillStyleEx : Style -> Command
+fillStyleEx =
+    encodeStyle "fillStyle"
 
 
 {-| Specifies the current text style being used when drawing text. This string
@@ -360,12 +429,22 @@ is #000 (black). [MDN docs](https://developer.mozilla.org/en-US/docs/Web/API/Can
 
 -}
 strokeStyle : Color -> Command
-strokeStyle color =
-    {- TODO: support CanvasGradient and CanvasPattern -}
-    color
-        |> Color.toCssString
-        |> string
-        |> field "strokeStyle"
+strokeStyle =
+    strokeStyleEx << Color
+
+
+
+{-| Specifies the color or style to use for the lines around shapes. The default
+is #000 (black). [MDN docs](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/strokeStyle)
+
+    empty
+        |> strokeStyleEx (Color <| Color.rgb 0 0 255)
+        |> strokeRect 10 10 100 100
+
+-}
+strokeStyleEx : Style -> Command
+strokeStyleEx =
+    encodeStyle "strokeStyle"
 
 
 {-| Specifies the current text alignment being used when drawing text. Beware
@@ -929,3 +1008,13 @@ field name value =
 fn : String -> List Command -> Command
 fn name args =
     Encode.object [ ( "type", string "function" ), ( "name", string name ), ( "args", Encode.list identity args ) ]
+
+
+var : String -> Command -> List Command -> Command
+var name init modifiers =
+    Encode.object
+        [ ( "type", string "variable" )
+        , ( "field", string name )
+        , ( "init", init )
+        , ( "modifiers", Encode.list identity modifiers )
+        ]

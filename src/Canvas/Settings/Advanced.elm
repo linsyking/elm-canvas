@@ -1,5 +1,6 @@
 module Canvas.Settings.Advanced exposing
     ( shadow, Shadow
+    , fillLinear, fillRadial, strokeLinear, strokeRadial, LinearGradient, RadialGradient
     , transform, Transform(..), translate, rotate, scale, applyMatrix
     , alpha, imageSmoothing, compositeOperationMode, GlobalCompositeOperationMode(..)
     )
@@ -202,6 +203,46 @@ shadow { blur, color, offset } =
         , CE.shadowOffsetX x
         , CE.shadowOffsetY y
         ]
+
+
+type alias LinearGradient =
+    { x0 : Float, y0 : Float, x1 : Float, y1 : Float }
+
+
+type alias RadialGradient =
+    { x0 : Float, y0 : Float, rad0 : Float, x1 : Float, y1 : Float, rad1 : Float }
+
+
+fillLinear : LinearGradient -> List (Float, Color) -> Setting
+fillLinear spec stops =
+    SettingDrawOp
+        <| C.Fill
+        <| CE.LinearGradient spec
+        <| stops
+
+
+fillRadial : RadialGradient -> List (Float, Color) -> Setting
+fillRadial spec stops =
+    SettingDrawOp
+        <| C.Fill
+        <| CE.RadialGradient spec
+        <| stops
+
+
+strokeLinear : LinearGradient -> List (Float, Color) -> Setting
+strokeLinear spec stops =
+    SettingDrawOp
+        <| C.Stroke
+        <| CE.LinearGradient spec
+        <| stops
+
+
+strokeRadial : RadialGradient -> List (Float, Color) -> Setting
+strokeRadial spec stops =
+    SettingDrawOp
+        <| C.Stroke
+        <| CE.RadialGradient spec
+        <| stops
 
 
 {-| Specifies the alpha value that is applied before renderables are drawn onto

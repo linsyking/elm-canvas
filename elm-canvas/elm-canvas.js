@@ -81,6 +81,19 @@ if (typeof window !== "undefined") {
             this.context[cmd.name](...cmd.args);
           } else if (cmd.type === "field") {
             this.context[cmd.name] = cmd.value;
+          } else if (cmd.type === "variable") {
+            (function() {
+              if (cmd.init.type === "function") {
+                const localVar = this.context[cmd.init.name](...cmd.init.args);
+                const modifiers = cmd.modifiers;
+                for (let i = 0; i < modifiers.length; i++) {
+                    if (modifiers[i].type === "function") {
+                      localVar[modifiers[i].name](...modifiers[i].args);
+                    }
+                }
+                this.context[cmd.field] = localVar;
+              }
+            })(); // Closure
           }
         }
       }
