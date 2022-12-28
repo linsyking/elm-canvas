@@ -14,6 +14,13 @@ The following are settings that you can apply, to create very specific and
 custom effects.
 
 
+## Gradient
+
+The gradient setting allows you to use linear or radial gradients for fill or stroke.
+
+@docs LinearGradient, RadialGradient, fillLinear, fillRadial, strokeLinear, strokeRadial
+
+
 ## Shadows
 
 The shadow setting allows you to create a shadow for a renderable, similar to
@@ -205,14 +212,37 @@ shadow { blur, color, offset } =
         ]
 
 
+{-| Linear gradient definition.
+
+  - `x0`, `y0`: top left corner of the gradient
+  - `x1`, `y1`: bottom right corner of the gradient
+
+-}
 type alias LinearGradient =
     { x0 : Float, y0 : Float, x1 : Float, y1 : Float }
 
 
+{-| Radial gradient definition.
+
+  - `x0`, `y0`: top left corner of the gradient
+  - `x1`, `y1`: bottom right corner of the gradient
+  - `rad0`: inner radius of the gradient
+  - `rad1`: outer radius of the gradient
+
+-}
 type alias RadialGradient =
     { x0 : Float, y0 : Float, rad0 : Float, x1 : Float, y1 : Float, rad1 : Float }
 
 
+{-| Fill with linear gradient.
+
+  - `x0`, `y0`: top left corner of the gradient
+  - `x1`, `y1`: bottom right corner of the gradient
+  - `stops`: `( offset, color )`
+    - offset is a float number from 0 to 1, so the horizontal position of the stop
+    - where color is the `Color` of given stop (from avh4/elm-color)
+
+-}
 fillLinear : LinearGradient -> List (Float, Color) -> Setting
 fillLinear spec stops =
     SettingDrawOp
@@ -221,6 +251,17 @@ fillLinear spec stops =
         <| stops
 
 
+{-| Fill with radial gradient.
+
+  - `x0`, `y0`: top left corner of the gradient
+  - `x1`, `y1`: bottom right corner of the gradient
+  - `rad0`: inner radius of the gradient
+  - `rad1`: outer radius of the gradient
+  - `stops`: `( offset, color )`
+    - offset is a float number from 0 to 1, so the horizontal position of the stop
+    - where color is the `Color` of given stop (from avh4/elm-color)
+
+-}
 fillRadial : RadialGradient -> List (Float, Color) -> Setting
 fillRadial spec stops =
     SettingDrawOp
@@ -229,6 +270,15 @@ fillRadial spec stops =
         <| stops
 
 
+{-| Stroke with linear gradient.
+
+  - `x0`, `y0`: top left corner of the gradient
+  - `x1`, `y1`: bottom right corner of the gradient
+  - `stops`: `( offset, color )`
+    - offset is a float number from 0 to 1, so the horizontal position of the stop
+    - where color is the `Color` of given stop (from avh4/elm-color)
+
+-}
 strokeLinear : LinearGradient -> List (Float, Color) -> Setting
 strokeLinear spec stops =
     SettingDrawOp
@@ -237,6 +287,17 @@ strokeLinear spec stops =
         <| stops
 
 
+{-| Stroke with radial gradient.
+
+  - `x0`, `y0`: top left corner of the gradient
+  - `x1`, `y1`: bottom right corner of the gradient
+  - `rad0`: inner radius of the gradient
+  - `rad1`: outer radius of the gradient
+  - `stops`: `( offset, color )`
+    - offset is a float number from 0 to 1, so the horizontal position of the stop
+    - where color is the `Color` of given stop (from avh4/elm-color)
+
+-}
 strokeRadial : RadialGradient -> List (Float, Color) -> Setting
 strokeRadial spec stops =
     SettingDrawOp
