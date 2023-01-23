@@ -1,3 +1,6 @@
+// The version adapted for gradients at: https://package.elm-lang.org/packages/shamansir/elm-canvas
+// Original version is at: https://package.elm-lang.org/packages/joakin/elm-canvas/latest/
+
 // Only run the script on the browser
 if (typeof window !== "undefined") {
   if (window["customElements"]) {
@@ -82,18 +85,18 @@ if (typeof window !== "undefined") {
           } else if (cmd.type === "field") {
             this.context[cmd.name] = cmd.value;
           } else if (cmd.type === "variable") {
-            (function() {
+            (function(context) {
               if (cmd.init.type === "function") {
-                const localVar = this.context[cmd.init.name](...cmd.init.args);
+                const localVar = context[cmd.init.name](...cmd.init.args);
                 const modifiers = cmd.modifiers;
                 for (let i = 0; i < modifiers.length; i++) {
                     if (modifiers[i].type === "function") {
                       localVar[modifiers[i].name](...modifiers[i].args);
                     }
                 }
-                this.context[cmd.field] = localVar;
+                context[cmd.field] = localVar;
               }
-            })(); // Closure
+            })(this.context); // Closure
           }
         }
       }
