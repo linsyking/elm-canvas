@@ -11,7 +11,7 @@ Line style settings apply to paths, and the stroke of shapes and text.
 
 -}
 
-import Canvas.Internal.Canvas as C exposing (..)
+import Canvas.Internal.Canvas exposing (..)
 import Canvas.Internal.CustomElementJsonApi as CE exposing (..)
 import Canvas.Settings exposing (Setting)
 
