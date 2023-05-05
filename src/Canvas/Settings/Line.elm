@@ -37,6 +37,7 @@ type LineCap
     | SquareCap
 
 
+lineCapToString : LineCap -> String
 lineCapToString cap =
     case cap of
         ButtCap ->
@@ -73,6 +74,7 @@ type LineJoin
     | MiterJoin
 
 
+lineJoinToString : LineJoin -> String
 lineJoinToString join =
     case join of
         BevelJoin ->

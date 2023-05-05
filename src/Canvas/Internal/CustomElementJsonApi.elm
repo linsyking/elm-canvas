@@ -1,15 +1,16 @@
 module Canvas.Internal.CustomElementJsonApi exposing
     ( Commands, empty
-    , Style(..), fillStyle, fillStyleEx, strokeStyle, strokeStyleEx
+    , fillStyle, strokeStyle
     , font, textAlign, textBaseline, fillText, strokeText
-    , fillRect, strokeRect, clearRect, roundRect
+    , fillRect, strokeRect, clearRect
     , beginPath, closePath, FillRule(..), fill, clip, stroke, arc, arcTo, bezierCurveTo, lineTo, moveTo, quadraticCurveTo, rect, circle
     , lineCap, lineDashOffset, lineJoin, lineWidth, miterLimit, setLineDash
     , shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY
+    , filter
     , globalAlpha, globalCompositeOperation, globalImageSmoothingEnabled, save, restore
     , rotate, scale, translate, transform, setTransform
     , drawImage
-    , Command, commands
+    , Command, Style(..), commands, fillStyleEx, roundRect, strokeStyleEx
     )
 
 {-| This module exposes a low level drawing API to work with the DOM canvas.
@@ -62,6 +63,11 @@ better defaults as time goes by, and make specific tutorials with Elm.
 @docs shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY, shadowOffset
 
 
+# Filter
+
+@docs filter
+
+
 # Global Canvas settings
 
 @docs globalAlpha, globalCompositeOperation, globalImageSmoothingEnabled, save, restore
@@ -99,26 +105,24 @@ empty =
 
 type Style
     = Color Color
-    | LinearGradient
-        { x0 : Float, y0 : Float, x1 : Float, y1 : Float }
-        (List ( Float, Color ))
-    | RadialGradient
-        { x0 : Float, y0 : Float, rad0 : Float, x1 : Float, y1 : Float, rad1 : Float }
-        (List ( Float, Color ))
-    -- TODO: Pattern
+    | LinearGradient { x0 : Float, y0 : Float, x1 : Float, y1 : Float } (List ( Float, Color ))
+    | RadialGradient { x0 : Float, y0 : Float, rad0 : Float, x1 : Float, y1 : Float, rad1 : Float } (List ( Float, Color ))
+
+
+
+-- TODO: Pattern
 
 
 encodeStyle : String -> Style -> Command
 encodeStyle fieldKey style =
     let
         adaptStops =
-            List.map
-                <| fn "addColorStop"
-                    << (\(offset, color) -> [ offset, color ])
+            List.map <|
+                fn "addColorStop"
+                    << (\( offset, color ) -> [ offset, color ])
                     << Tuple.mapBoth float (Color.toCssString >> string)
-
-    in case style of
-
+    in
+    case style of
         Color color ->
             color
                 |> Color.toCssString
@@ -128,19 +132,20 @@ encodeStyle fieldKey style =
         LinearGradient spec stops ->
             var
                 fieldKey
-                ( fn "createLinearGradient"
+                (fn "createLinearGradient"
                     [ float spec.x0
                     , float spec.y0
                     , float spec.x1
                     , float spec.y1
                     ]
                 )
-                <| adaptStops stops
+            <|
+                adaptStops stops
 
         RadialGradient spec stops ->
             var
                 fieldKey
-                ( fn "createRadialGradient"
+                (fn "createRadialGradient"
                     [ float spec.x0
                     , float spec.y0
                     , float spec.rad0
@@ -149,7 +154,9 @@ encodeStyle fieldKey style =
                     , float spec.rad1
                     ]
                 )
-                <| adaptStops stops
+            <|
+                adaptStops stops
+
 
 
 -- Properties
@@ -169,14 +176,15 @@ fillStyle =
 {-| Specifies the color or style to use inside shapes. The default is #000
 (black). [MDN Docs](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle)
 
-    empty |> fillStyleEx
-        ( LinearGradient
-            { x0 = 0, x1 = 100, y0 = 1, y1 = 100 }
-            [ ( 0,   Color.black )
-            , ( 0.5, Color.blue  )
-            , ( 1.0, Color.white )
-            ]
-        )
+    empty
+        |> fillStyleEx
+            (LinearGradient
+                { x0 = 0, x1 = 100, y0 = 1, y1 = 100 }
+                [ ( 0, Color.black )
+                , ( 0.5, Color.blue )
+                , ( 1.0, Color.white )
+                ]
+            )
 
 -}
 fillStyleEx : Style -> Command
@@ -420,6 +428,16 @@ shadowOffsetY value =
     field "shadowOffsetY" (float value)
 
 
+{-| Specify the filter property.
+
+[MDN docs](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter)
+
+-}
+filter : String -> Command
+filter value =
+    field "filter" (string value)
+
+
 {-| Specifies the color or style to use for the lines around shapes. The default
 is #000 (black). [MDN docs](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/strokeStyle)
 
@@ -431,7 +449,6 @@ is #000 (black). [MDN docs](https://developer.mozilla.org/en-US/docs/Web/API/Can
 strokeStyle : Color -> Command
 strokeStyle =
     strokeStyleEx << Color
-
 
 
 {-| Specifies the color or style to use for the lines around shapes. The default

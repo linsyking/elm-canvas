@@ -11,7 +11,6 @@ module Canvas.Internal.Canvas exposing
 
 import Canvas.Internal.CustomElementJsonApi as C exposing (Commands)
 import Canvas.Texture exposing (Texture)
-import Color exposing (Color)
 
 
 type alias Point =

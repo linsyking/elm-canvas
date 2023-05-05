@@ -51,7 +51,6 @@ import Canvas.Internal.Canvas as C exposing (..)
 import Canvas.Internal.CustomElementJsonApi as CE exposing (Commands, commands)
 import Canvas.Internal.Texture as T
 import Canvas.Texture as Texture exposing (Texture)
-import Color exposing (Color)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (on)
@@ -333,7 +332,6 @@ You can find more info on this [page](https://developer.mozilla.org/en-US/docs/W
 roundRect : Point -> Float -> Float -> List Float -> Shape
 roundRect pos width height radii =
     RoundRect pos width height radii
-
 
 
 {-| Creates a circle. It takes the position of the center of the circle, and the

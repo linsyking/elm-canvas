@@ -1,7 +1,8 @@
 module Canvas.Settings.Advanced exposing
-    ( shadow, Shadow
-    , fillLinear, fillRadial, strokeLinear, strokeRadial, LinearGradient, RadialGradient
+    ( LinearGradient, RadialGradient, fillLinear, fillRadial, strokeLinear, strokeRadial
+    , shadow, Shadow
     , transform, Transform(..), translate, rotate, scale, applyMatrix
+    , filter
     , alpha, imageSmoothing, compositeOperationMode, GlobalCompositeOperationMode(..)
     )
 
@@ -44,6 +45,13 @@ system, since it very hard to know what the center of your shape is to give
 sensible defaults.
 
 @docs transform, Transform, translate, rotate, scale, applyMatrix
+
+
+## Filter
+
+Filters are powerful when you want to add visual effects to your renderable objects.
+
+@docs filter
 
 
 ## Alpha, image smoothing and global composite mode
@@ -239,16 +247,16 @@ type alias RadialGradient =
   - `x0`, `y0`: top left corner of the gradient
   - `x1`, `y1`: bottom right corner of the gradient
   - `stops`: `( offset, color )`
-    - offset is a float number from 0 to 1, so the horizontal position of the stop
-    - where color is the `Color` of given stop (from avh4/elm-color)
+      - offset is a float number from 0 to 1, so the horizontal position of the stop
+      - where color is the `Color` of given stop (from avh4/elm-color)
 
 -}
-fillLinear : LinearGradient -> List (Float, Color) -> Setting
+fillLinear : LinearGradient -> List ( Float, Color ) -> Setting
 fillLinear spec stops =
-    SettingDrawOp
-        <| C.Fill
-        <| CE.LinearGradient spec
-        <| stops
+    SettingDrawOp <|
+        C.Fill <|
+            CE.LinearGradient spec <|
+                stops
 
 
 {-| Fill with radial gradient.
@@ -258,16 +266,16 @@ fillLinear spec stops =
   - `rad0`: inner radius of the gradient
   - `rad1`: outer radius of the gradient
   - `stops`: `( offset, color )`
-    - offset is a float number from 0 to 1, so the horizontal position of the stop
-    - where color is the `Color` of given stop (from avh4/elm-color)
+      - offset is a float number from 0 to 1, so the horizontal position of the stop
+      - where color is the `Color` of given stop (from avh4/elm-color)
 
 -}
-fillRadial : RadialGradient -> List (Float, Color) -> Setting
+fillRadial : RadialGradient -> List ( Float, Color ) -> Setting
 fillRadial spec stops =
-    SettingDrawOp
-        <| C.Fill
-        <| CE.RadialGradient spec
-        <| stops
+    SettingDrawOp <|
+        C.Fill <|
+            CE.RadialGradient spec <|
+                stops
 
 
 {-| Stroke with linear gradient.
@@ -275,16 +283,16 @@ fillRadial spec stops =
   - `x0`, `y0`: top left corner of the gradient
   - `x1`, `y1`: bottom right corner of the gradient
   - `stops`: `( offset, color )`
-    - offset is a float number from 0 to 1, so the horizontal position of the stop
-    - where color is the `Color` of given stop (from avh4/elm-color)
+      - offset is a float number from 0 to 1, so the horizontal position of the stop
+      - where color is the `Color` of given stop (from avh4/elm-color)
 
 -}
-strokeLinear : LinearGradient -> List (Float, Color) -> Setting
+strokeLinear : LinearGradient -> List ( Float, Color ) -> Setting
 strokeLinear spec stops =
-    SettingDrawOp
-        <| C.Stroke
-        <| CE.LinearGradient spec
-        <| stops
+    SettingDrawOp <|
+        C.Stroke <|
+            CE.LinearGradient spec <|
+                stops
 
 
 {-| Stroke with radial gradient.
@@ -294,16 +302,33 @@ strokeLinear spec stops =
   - `rad0`: inner radius of the gradient
   - `rad1`: outer radius of the gradient
   - `stops`: `( offset, color )`
-    - offset is a float number from 0 to 1, so the horizontal position of the stop
-    - where color is the `Color` of given stop (from avh4/elm-color)
+      - offset is a float number from 0 to 1, so the horizontal position of the stop
+      - where color is the `Color` of given stop (from avh4/elm-color)
 
 -}
-strokeRadial : RadialGradient -> List (Float, Color) -> Setting
+strokeRadial : RadialGradient -> List ( Float, Color ) -> Setting
 strokeRadial spec stops =
-    SettingDrawOp
-        <| C.Stroke
-        <| CE.RadialGradient spec
-        <| stops
+    SettingDrawOp <|
+        C.Stroke <|
+            CE.RadialGradient spec <|
+                stops
+
+
+{-| Specify a filter applied on the renderable object.
+
+You can use functions like `blur`, `brightness`, `contrast` and so on to apply the filters.
+
+The property is a string, so you can choose your filters like this:
+
+`"<filter-function1> [<filter-function2] [<filter-functionN]"`
+
+See the [MDN docs](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/filter)
+for more information and examples.
+
+-}
+filter : String -> Setting
+filter f =
+    SettingCommand (CE.filter f)
 
 
 {-| Specifies the alpha value that is applied before renderables are drawn onto
