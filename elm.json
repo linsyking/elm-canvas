@@ -3,7 +3,7 @@
     "name": "linsyking/elm-canvas",
     "summary": "2D drawing API based on DOM Canvas, but nicer",
     "license": "BSD-3-Clause",
-    "version": "2.1.0",
+    "version": "3.0.0",
     "exposed-modules": {
         "Main module": [
             "Canvas"
@@ -16,9 +16,6 @@
         ],
         "Textures": [
             "Canvas.Texture"
-        ],
-        "Videos": [
-            "Canvas.Video"
         ]
     },
     "elm-version": "0.19.0 <= v < 0.20.0",

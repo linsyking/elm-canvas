@@ -142,7 +142,6 @@ view model =
         { width = w
         , height = h
         , textures = textures
-        , videos = []
         }
         []
         (shapes [ fill (Color.rgb 0.85 0.92 1) ] [ rect ( 0, 0 ) w h ]
