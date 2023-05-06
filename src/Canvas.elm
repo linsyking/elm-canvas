@@ -1,7 +1,7 @@
 module Canvas exposing
     ( toHtml, toHtmlWith
     , Renderable, Point
-    , clear, shapes, text, texture, group
+    , clear, shapes, text, texture, group, video
     , Shape
     , rect, roundRect, circle, arc, path
     , PathSegment, arcTo, bezierCurveTo, lineTo, moveTo, quadraticCurveTo
@@ -23,7 +23,7 @@ requires the `elm-canvas` web component to work.
 
 @docs Renderable, Point
 
-@docs clear, shapes, text, texture, group
+@docs clear, shapes, text, texture, group, video
 
 
 # Drawing shapes
@@ -53,7 +53,7 @@ import Canvas.Internal.Texture as T
 import Canvas.Internal.Video as V
 import Canvas.Texture as Texture exposing (Texture)
 import Canvas.Video as Video exposing (Video)
-import Html exposing (..)
+import Html as H exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (on)
 import Html.Keyed as Keyed
@@ -557,6 +557,19 @@ texture settings p t =
         )
 
 
+{-| Rendering video
+-}
+video : List Setting -> Point -> Video -> Renderable
+video settings p t =
+    addSettingsToRenderable settings
+        (Renderable
+            { commands = []
+            , drawOp = NotSpecified
+            , drawable = DrawableVideo p t
+            }
+        )
+
+
 
 -- Groups
 
@@ -617,6 +630,9 @@ renderDrawable drawable drawOp cmds =
 
         DrawableTexture p t ->
             renderTexture p t cmds
+
+        DrawableVideo p t ->
+            renderVideo p t cmds
 
         DrawableClear p w h ->
             renderClear p w h cmds
@@ -795,7 +811,7 @@ renderVideoSource videoSource =
     case videoSource of
         V.TSVideoUrl url onLoad ->
             ( url
-            , video
+            , H.video
                 [ src url
                 , style "display" "none"
                 , on "load" (D.map onLoad V.decodeVideoLoadEvent)
