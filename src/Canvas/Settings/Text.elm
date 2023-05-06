@@ -50,7 +50,6 @@ type TextAlign
     | End
 
 
-textAlignToString : TextAlign -> String
 textAlignToString alignment =
     case alignment of
         Left ->
@@ -176,9 +175,6 @@ maxWidth width =
                     d
 
                 DrawableTexture _ _ ->
-                    d
-
-                DrawableVideo _ _ ->
                     d
 
                 DrawableClear _ _ _ ->

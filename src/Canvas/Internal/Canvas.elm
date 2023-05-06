@@ -11,7 +11,6 @@ module Canvas.Internal.Canvas exposing
 
 import Canvas.Internal.CustomElementJsonApi as C exposing (Commands)
 import Canvas.Texture exposing (Texture)
-import Canvas.Video exposing (Video)
 
 
 type alias Point =
@@ -36,7 +35,6 @@ type Drawable
     = DrawableText Text
     | DrawableShapes (List Shape)
     | DrawableTexture Point Texture
-    | DrawableVideo Point Video
     | DrawableClear Point Float Float
     | DrawableGroup (List Renderable)
 
