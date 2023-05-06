@@ -5,13 +5,13 @@ module Canvas.Video exposing
     , dimensions
     )
 
-{-| This module exposes the types and functions to load and work with textures.
+{-| This module exposes the types and functions to load and work with videos.
 
-You can load textures by using `toHtmlWith`, and use them to draw with
-`Canvas.texture`.
+You can load videos by using `toHtmlWith`, and use them to draw with
+`Canvas.video`.
 
 
-# Loading Textures
+# Loading Videos
 
 
 ## From an external source
