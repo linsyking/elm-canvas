@@ -50,6 +50,7 @@ type TextAlign
     | End
 
 
+textAlignToString : TextAlign -> String
 textAlignToString alignment =
     case alignment of
         Left ->

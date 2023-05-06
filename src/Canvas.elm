@@ -50,7 +50,9 @@ In order to make a complex path, we need to put together a list of `PathSegment`
 import Canvas.Internal.Canvas as C exposing (..)
 import Canvas.Internal.CustomElementJsonApi as CE exposing (Commands, commands)
 import Canvas.Internal.Texture as T
+import Canvas.Internal.Video as V
 import Canvas.Texture as Texture exposing (Texture)
+import Canvas.Video as Video exposing (Video)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (on)
@@ -93,6 +95,7 @@ toHtml ( w, h ) attrs entities =
         { width = w
         , height = h
         , textures = []
+        , videos = []
         }
         attrs
         entities
@@ -129,6 +132,7 @@ toHtmlWith :
     { width : Int
     , height : Int
     , textures : List (Texture.Source msg)
+    , videos : List (Video.Source msg)
     }
     -> List (Attribute msg)
     -> List Renderable
@@ -138,6 +142,7 @@ toHtmlWith options attrs entities =
         (commands (render entities) :: height options.height :: width options.width :: attrs)
         (( "__canvas", cnvs )
             :: List.map renderTextureSource options.textures
+            ++ List.map renderVideoSource options.videos
         )
 
 
@@ -764,6 +769,11 @@ renderTexture ( x, y ) t cmds =
     T.drawTexture x y t cmds
 
 
+renderVideo : Point -> Video -> Commands -> Commands
+renderVideo ( x, y ) t cmds =
+    V.drawVideo x y t cmds
+
+
 renderTextureSource : Texture.Source msg -> ( String, Html msg )
 renderTextureSource textureSource =
     case textureSource of
@@ -774,6 +784,21 @@ renderTextureSource textureSource =
                 , attribute "crossorigin" "anonymous"
                 , style "display" "none"
                 , on "load" (D.map onLoad T.decodeImageLoadEvent)
+                , on "error" (D.succeed (onLoad Nothing))
+                ]
+                []
+            )
+
+
+renderVideoSource : Video.Source msg -> ( String, Html msg )
+renderVideoSource videoSource =
+    case videoSource of
+        V.TSVideoUrl url onLoad ->
+            ( url
+            , video
+                [ src url
+                , style "display" "none"
+                , on "load" (D.map onLoad V.decodeVideoLoadEvent)
                 , on "error" (D.succeed (onLoad Nothing))
                 ]
                 []
