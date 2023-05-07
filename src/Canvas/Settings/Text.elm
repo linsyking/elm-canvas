@@ -50,6 +50,7 @@ type TextAlign
     | End
 
 
+textAlignToString : TextAlign -> String
 textAlignToString alignment =
     case alignment of
         Left ->
@@ -181,5 +182,8 @@ maxWidth width =
                     d
 
                 DrawableGroup _ ->
+                    d
+
+                DrawableEmpty ->
                     d
         )

@@ -37,6 +37,7 @@ type Drawable
     | DrawableTexture Point Texture
     | DrawableClear Point Float Float
     | DrawableGroup (List Renderable)
+    | DrawableEmpty
 
 
 type Renderable

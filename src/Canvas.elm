@@ -1,7 +1,7 @@
 module Canvas exposing
     ( toHtml, toHtmlWith
     , Renderable, Point
-    , clear, shapes, text, texture, group
+    , clear, shapes, text, texture, group, empty
     , Shape
     , rect, roundRect, circle, arc, path
     , PathSegment, arcTo, bezierCurveTo, lineTo, moveTo, quadraticCurveTo
@@ -23,7 +23,7 @@ requires the `elm-canvas` web component to work.
 
 @docs Renderable, Point
 
-@docs clear, shapes, text, texture, group
+@docs clear, shapes, text, texture, group, empty
 
 
 # Drawing shapes
@@ -582,6 +582,17 @@ group settings entities =
         )
 
 
+{-| Empty renderable. Useful for creating an empty renderable instead of writing `group [] []`
+-}
+empty : Renderable
+empty =
+    Renderable
+        { commands = []
+        , drawOp = NotSpecified
+        , drawable = DrawableEmpty
+        }
+
+
 
 -- Rendering internals
 
@@ -618,6 +629,9 @@ renderDrawable drawable drawOp cmds =
 
         DrawableGroup renderables ->
             renderGroup drawOp renderables cmds
+
+        DrawableEmpty ->
+            cmds
 
 
 renderShape : Shape -> Commands -> Commands
