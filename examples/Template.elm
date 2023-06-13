@@ -67,7 +67,7 @@ view model =
         []
         [ shapes [ fill Color.white ] [ rect ( 0, 0 ) w h ]
         , text
-            [ font { size = 48, family = "sans-serif" }
+            [ font { style = "", size = 48, family = "sans-serif" }
             , align Center
             , fill (Color.rgb 255 0 0)
             ]

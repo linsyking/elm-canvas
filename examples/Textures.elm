@@ -161,7 +161,7 @@ view model =
 renderText : String -> Renderable
 renderText txt =
     text
-        [ font { size = 48, family = "sans-serif" }
+        [ font { style = "", size = 48, family = "sans-serif" }
         , align Center
         , maxWidth w
         ]

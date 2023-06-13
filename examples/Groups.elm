@@ -70,7 +70,7 @@ view model =
         , group [ fill Color.red ]
             [ shapes [] [ rect ( w / 4 - 20, h / 3 - 20 ) 40 40 ]
             , text
-                [ font { size = 48, family = "sans-serif" }
+                [ font { style = "", size = 48, family = "sans-serif" }
                 , align Center
                 ]
                 ( w / 4, h / 3 * 2 - 24 )
@@ -80,7 +80,7 @@ view model =
             [ group []
                 [ shapes [] [ rect ( w / 4 * 2 - 20, h / 3 - 20 ) 40 40 ]
                 , text
-                    [ font { size = 48, family = "sans-serif" }
+                    [ font { style = "", size = 48, family = "sans-serif" }
                     , align Center
                     ]
                     ( w / 4 * 2, h / 3 * 2 - 24 )
@@ -89,7 +89,7 @@ view model =
             , group [ fill Color.blue ]
                 [ shapes [] [ rect ( w / 4 * 3 - 20, h / 3 - 20 ) 40 40 ]
                 , text
-                    [ font { size = 48, family = "sans-serif" }
+                    [ font { style = "", size = 48, family = "sans-serif" }
                     , align Center
                     ]
                     ( w / 4 * 3, h / 3 * 2 - 24 )

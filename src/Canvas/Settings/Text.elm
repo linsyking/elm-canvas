@@ -8,7 +8,7 @@ module Canvas.Settings.Text exposing (font, align, TextAlign(..), baseLine, Text
 To draw text we use the function `text`:
 
     text
-        [ font { size = 48, family = "serif" }
+        [ font { style = "", size = 48, family = "serif" }
         , align Center
         ]
         ( 50, 50 )
@@ -118,6 +118,8 @@ textBaseLineToString baseLineSetting =
 
 {-| Specify the font size and family to use when rendering text.
 
+  - `style`: What is the style of the text. Similar to the `font-style` property
+    in CSS. For example, you can use `italic bold` to specify both italic and bold.
   - `size`: What is the size of the text in pixels. Similar to the `font-size`
     property in CSS.
   - `family`: Font family name to use when drawing the text. For example, you can
@@ -126,9 +128,9 @@ textBaseLineToString baseLineSetting =
     `"Consolas"`.
 
 -}
-font : { size : Int, family : String } -> Setting
-font { size, family } =
-    (String.fromInt size ++ "px " ++ family)
+font : { style : String, size : Int, family : String } -> Setting
+font { style, size, family } =
+    (style ++ " " ++ String.fromInt size ++ "px " ++ family)
         |> CE.font
         |> SettingCommand
 

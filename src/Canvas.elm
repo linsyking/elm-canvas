@@ -68,7 +68,7 @@ import Json.Decode as D
         [ style "display" "block", onClick CanvasClick ]
         [ shapes [ fill Color.white ] [ rect ( 0, 0 ) w h ]
         , text
-            [ font { size = 48, family = "sans-serif" }, align Center ]
+            [ font { style = "", size = 48, family = "sans-serif" }, align Center ]
             ( 50, 50 )
             "Hello world"
         ]
@@ -109,7 +109,7 @@ textures.
         [ style "display" "block", onClick CanvasClick ]
         [ shapes [ fill Color.white ] [ rect ( 0, 0 ) w h ]
         , text
-            [ font { size = 48, family = "sans-serif" }, align Center ]
+            [ font { style = "", size = 48, family = "sans-serif" }, align Center ]
             ( 50, 50 )
             "Hello world"
         ]
@@ -504,7 +504,7 @@ positioned with regards to the coordinates provided.
     Canvas.toHtml ( width, height )
         []
         [ text
-            [ font { size = 48, family = "sans-serif" }, align Center ]
+            [ font { style = "", size = 48, family = "sans-serif" }, align Center ]
             ( 50, 50 )
             "Hello world"
         ]
@@ -564,7 +564,7 @@ settings for the whole group.
         [ group [ fill Color.red ]
             [ shapes [] [ rect ( 0, 0 ) w h ]
             , text
-                [ font { size = 48, family = "sans-serif" }, align Center ]
+                [ font { style = "", size = 48, family = "sans-serif" }, align Center ]
                 ( 50, 50 )
                 "Hello world"
             ]
