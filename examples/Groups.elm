@@ -66,7 +66,23 @@ view : Model -> Html Msg
 view model =
     Canvas.toHtml ( w, h )
         []
-        [ shapes [ fill Color.white ] [ rect ( 0, 0 ) w h ]
+        [ group []
+            [ shapes [ fill Color.white ] [ rect ( 0, 0 ) w h ]
+            , textbox []
+                { point = ( 100, 50 )
+                , size = ( 200, 100 )
+                , text = "Hi, this is a test. Looks like it can break a sentence into multiple lines automatically."
+                , align = Nothing
+                , baseLine = Nothing
+                , fontSize = Nothing
+                , font = Just "Courier New"
+                , fontStyle = Nothing
+                , fontVariant = Nothing
+                , fontWeight = Nothing
+                , lineHeight = Nothing
+                , justify = Nothing
+                }
+            ]
         , group [ fill Color.red ]
             [ shapes [] [ rect ( w / 4 - 20, h / 3 - 20 ) 40 40 ]
             , text

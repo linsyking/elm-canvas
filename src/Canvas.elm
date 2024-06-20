@@ -176,6 +176,8 @@ type alias Renderable =
     C.Renderable
 
 
+{-| Text box
+-}
 type alias TextBox =
     C.TextBox
 
