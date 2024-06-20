@@ -24,6 +24,7 @@ nothing if you apply them to other renderables, like `shapes`.
 import Canvas.Internal.Canvas exposing (..)
 import Canvas.Internal.CustomElementJsonApi as CE exposing (..)
 import Canvas.Settings exposing (Setting)
+import Html.Attributes exposing (style)
 
 
 {-| Type of text alignment
@@ -174,18 +175,6 @@ maxWidth width =
                 DrawableText txt ->
                     DrawableText { txt | maxWidth = Just width }
 
-                DrawableShapes _ ->
-                    d
-
-                DrawableTexture _ _ ->
-                    d
-
-                DrawableClear _ _ _ ->
-                    d
-
-                DrawableGroup _ ->
-                    d
-
-                DrawableEmpty ->
+                _ ->
                     d
         )

@@ -7,6 +7,7 @@ module Canvas.Internal.Canvas exposing
     , Setting(..)
     , Shape(..)
     , Text
+    , TextBox
     )
 
 import Canvas.Internal.CustomElementJsonApi as C exposing (Commands)
@@ -33,11 +34,28 @@ type DrawOp
 
 type Drawable
     = DrawableText Text
+    | DrawableTextBox TextBox
     | DrawableShapes (List Shape)
     | DrawableTexture Point Texture
     | DrawableClear Point Float Float
     | DrawableGroup (List Renderable)
     | DrawableEmpty
+
+
+type alias TextBox =
+    { point : Point
+    , size : ( Float, Float )
+    , text : String
+    , align : String
+    , baseLine : String
+    , fontSize : Float
+    , font : String
+    , fontStyle : String
+    , fontVariant : String
+    , fontWeight : String
+    , lineHeight : Float
+    , justify : Bool
+    }
 
 
 type Renderable

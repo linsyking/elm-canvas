@@ -1,7 +1,7 @@
 module Canvas.Internal.CustomElementJsonApi exposing
     ( Commands, empty
     , fillStyle, strokeStyle
-    , font, textAlign, textBaseline, fillText, strokeText
+    , font, textAlign, textBaseline, fillText, strokeText, renderTextBox
     , fillRect, strokeRect, clearRect
     , beginPath, closePath, FillRule(..), fill, clip, stroke, arc, arcTo, bezierCurveTo, lineTo, moveTo, quadraticCurveTo, rect, circle
     , lineCap, lineDashOffset, lineJoin, lineWidth, miterLimit, setLineDash
@@ -40,7 +40,7 @@ better defaults as time goes by, and make specific tutorials with Elm.
 
 # Text
 
-@docs font, textAlign, textBaseline, fillText, strokeText
+@docs font, textAlign, textBaseline, fillText, strokeText, renderTextBox
 
 
 # Shapes
@@ -711,6 +711,42 @@ fillText text x y maybeMaxWidth =
 
         Just maxWidth ->
             fn "fillText" [ string text, float x, float y, float maxWidth ]
+
+
+renderTextBox :
+    { point : ( Float, Float )
+    , size : ( Float, Float )
+    , text : String
+    , align : String
+    , baseLine : String
+    , fontSize : Float
+    , font : String
+    , fontStyle : String
+    , fontVariant : String
+    , fontWeight : String
+    , lineHeight : Float
+    , justify : Bool
+    }
+    -> Command
+renderTextBox opt =
+    fn "drawText"
+        [ string opt.text
+        , Encode.object
+            [ ( "x", float (Tuple.first opt.point) )
+            , ( "y", float (Tuple.second opt.point) )
+            , ( "width", float (Tuple.first opt.size) )
+            , ( "height", float (Tuple.second opt.size) )
+            , ( "align", string opt.align )
+            , ( "vAlign", string opt.baseLine )
+            , ( "fontSize", float opt.fontSize )
+            , ( "font", string opt.font )
+            , ( "fontStyle", string opt.fontStyle )
+            , ( "fontVariant", string opt.fontVariant )
+            , ( "fontWeight", string opt.fontWeight )
+            , ( "lineHeight", float opt.lineHeight )
+            , ( "justify", bool opt.justify )
+            ]
+        ]
 
 
 {-| Connects the last point in the sub-path to the x, y coordinates with a

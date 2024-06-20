@@ -1,7 +1,7 @@
 module Canvas exposing
     ( toHtml, toHtmlWith
     , Renderable, Point
-    , clear, shapes, text, texture, group, empty
+    , clear, shapes, text, textbox, texture, group, empty
     , Shape
     , rect, roundRect, circle, arc, path
     , PathSegment, arcTo, bezierCurveTo, lineTo, moveTo, quadraticCurveTo
@@ -23,7 +23,7 @@ requires the `elm-canvas` web component to work.
 
 @docs Renderable, Point
 
-@docs clear, shapes, text, texture, group, empty
+@docs clear, shapes, text, textbox, texture, group, empty
 
 
 # Drawing shapes
@@ -524,6 +524,19 @@ text settings point str =
         )
 
 
+{-| Render text box.
+-}
+textbox : List Setting -> TextBox -> Renderable
+textbox settings box =
+    addSettingsToRenderable settings
+        (Renderable
+            { commands = []
+            , drawOp = NotSpecified
+            , drawable = DrawableTextBox box
+            }
+        )
+
+
 
 -- Textures
 
@@ -617,6 +630,9 @@ renderDrawable drawable drawOp cmds =
         DrawableText txt ->
             renderText drawOp txt cmds
 
+        DrawableTextBox txt ->
+            renderTextBox drawOp txt cmds
+
         DrawableShapes ss ->
             List.foldl renderShape (CE.beginPath :: cmds) ss
                 |> renderShapeDrawOp drawOp
@@ -675,10 +691,36 @@ renderLineSegment segment cmds =
             CE.quadraticCurveTo cpx cpy x y :: cmds
 
 
+renderTextBox : DrawOp -> TextBox -> Commands -> Commands
+renderTextBox drawOp txt cmds =
+    cmds
+        |> renderTextBoxDrawOp drawOp txt
+
+
 renderText : DrawOp -> Text -> Commands -> Commands
 renderText drawOp txt cmds =
     cmds
         |> renderTextDrawOp drawOp txt
+
+
+renderTextBoxDrawOp : DrawOp -> TextBox -> Commands -> Commands
+renderTextBoxDrawOp drawOp txt cmds =
+    case drawOp of
+        NotSpecified ->
+            cmds
+                |> renderTextBoxFill txt Nothing
+                |> renderTextBoxStroke txt Nothing
+
+        Fill fill ->
+            renderTextBoxFill txt (Just fill) cmds
+
+        Stroke stroke ->
+            renderTextBoxStroke txt (Just stroke) cmds
+
+        FillAndStroke fill stroke ->
+            cmds
+                |> renderTextBoxFill txt (Just fill)
+                |> renderTextBoxStroke txt (Just stroke)
 
 
 renderTextDrawOp : DrawOp -> Text -> Commands -> Commands
@@ -705,12 +747,36 @@ renderTextDrawOp drawOp txt cmds =
                 |> renderTextStroke txt x y (Just stroke)
 
 
+renderTextBoxFill : TextBox -> Maybe CE.Style -> Commands -> Commands
+renderTextBoxFill txt maybeStyle cmds =
+    CE.renderTextBox txt
+        :: (case maybeStyle of
+                Just style ->
+                    CE.fillStyleEx style :: cmds
+
+                Nothing ->
+                    cmds
+           )
+
+
 renderTextFill : Text -> Float -> Float -> Maybe CE.Style -> Commands -> Commands
 renderTextFill txt x y maybeStyle cmds =
     CE.fillText txt.text x y txt.maxWidth
         :: (case maybeStyle of
                 Just style ->
                     CE.fillStyleEx style :: cmds
+
+                Nothing ->
+                    cmds
+           )
+
+
+renderTextBoxStroke : TextBox -> Maybe CE.Style -> Commands -> Commands
+renderTextBoxStroke txt maybeStyle cmds =
+    CE.renderTextBox txt
+        :: (case maybeStyle of
+                Just style ->
+                    CE.strokeStyleEx style :: cmds
 
                 Nothing ->
                     cmds
