@@ -717,35 +717,37 @@ renderTextBox :
     { point : ( Float, Float )
     , size : ( Float, Float )
     , text : String
-    , align : String
-    , baseLine : String
-    , fontSize : Float
-    , font : String
-    , fontStyle : String
-    , fontVariant : String
-    , fontWeight : String
-    , lineHeight : Float
-    , justify : Bool
+    , align : Maybe String
+    , baseLine : Maybe String
+    , fontSize : Maybe Float
+    , font : Maybe String
+    , fontStyle : Maybe String
+    , fontVariant : Maybe String
+    , fontWeight : Maybe String
+    , lineHeight : Maybe Float
+    , justify : Maybe Bool
     }
     -> Command
 renderTextBox opt =
     fn "drawText"
         [ string opt.text
-        , Encode.object
+        , Encode.object <|
             [ ( "x", float (Tuple.first opt.point) )
             , ( "y", float (Tuple.second opt.point) )
             , ( "width", float (Tuple.first opt.size) )
             , ( "height", float (Tuple.second opt.size) )
-            , ( "align", string opt.align )
-            , ( "vAlign", string opt.baseLine )
-            , ( "fontSize", float opt.fontSize )
-            , ( "font", string opt.font )
-            , ( "fontStyle", string opt.fontStyle )
-            , ( "fontVariant", string opt.fontVariant )
-            , ( "fontWeight", string opt.fontWeight )
-            , ( "lineHeight", float opt.lineHeight )
-            , ( "justify", bool opt.justify )
             ]
+                ++ List.filterMap identity
+                    [ Maybe.map (\a -> ( "align", string a )) opt.align
+                    , Maybe.map (\a -> ( "vAlign", string a )) opt.baseLine
+                    , Maybe.map (\a -> ( "fontSize", float a )) opt.fontSize
+                    , Maybe.map (\a -> ( "font", string a )) opt.font
+                    , Maybe.map (\a -> ( "fontStyle", string a )) opt.fontStyle
+                    , Maybe.map (\a -> ( "fontVariant", string a )) opt.fontVariant
+                    , Maybe.map (\a -> ( "fontWeight", string a )) opt.fontWeight
+                    , Maybe.map (\a -> ( "lineHeight", float a )) opt.lineHeight
+                    , Maybe.map (\a -> ( "justify", bool a )) opt.justify
+                    ]
         ]
 
 

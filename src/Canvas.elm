@@ -1,6 +1,6 @@
 module Canvas exposing
     ( toHtml, toHtmlWith
-    , Renderable, Point
+    , Renderable, Point, TextBox
     , clear, shapes, text, textbox, texture, group, empty
     , Shape
     , rect, roundRect, circle, arc, path
@@ -21,7 +21,7 @@ requires the `elm-canvas` web component to work.
 
 # Drawing things
 
-@docs Renderable, Point
+@docs Renderable, Point, TextBox
 
 @docs clear, shapes, text, textbox, texture, group, empty
 
@@ -174,6 +174,10 @@ We can make `Renderable`s to use with `Canvas.toHtml` with functions like
 -}
 type alias Renderable =
     C.Renderable
+
+
+type alias TextBox =
+    C.TextBox
 
 
 mergeDrawOp : DrawOp -> DrawOp -> DrawOp

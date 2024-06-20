@@ -46,15 +46,15 @@ type alias TextBox =
     { point : Point
     , size : ( Float, Float )
     , text : String
-    , align : String
-    , baseLine : String
-    , fontSize : Float
-    , font : String
-    , fontStyle : String
-    , fontVariant : String
-    , fontWeight : String
-    , lineHeight : Float
-    , justify : Bool
+    , align : Maybe String
+    , baseLine : Maybe String
+    , fontSize : Maybe Float
+    , font : Maybe String
+    , fontStyle : Maybe String
+    , fontVariant : Maybe String
+    , fontWeight : Maybe String
+    , lineHeight : Maybe Float
+    , justify : Maybe Bool
     }
 
 
