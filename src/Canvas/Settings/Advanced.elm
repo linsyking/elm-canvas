@@ -4,6 +4,7 @@ module Canvas.Settings.Advanced exposing
     , transform, Transform(..), translate, rotate, scale, applyMatrix
     , filter
     , alpha, imageSmoothing, compositeOperationMode, GlobalCompositeOperationMode(..)
+    , reverseOrder
     )
 
 {-|
@@ -60,6 +61,11 @@ Finally, there are a couple of other settings that you can use to create
 interesting visual effects:
 
 @docs alpha, imageSmoothing, compositeOperationMode, GlobalCompositeOperationMode
+
+
+## Miscellaneous
+
+@docs reverseOrder
 
 -}
 
@@ -518,3 +524,10 @@ applyMatrix :
     -> Transform
 applyMatrix =
     ApplyMatrix
+
+
+{-| Reverse the rendering order of a renderable.
+-}
+reverseOrder : Setting
+reverseOrder =
+    SettingUpdateDrawable C.reverseDrawable

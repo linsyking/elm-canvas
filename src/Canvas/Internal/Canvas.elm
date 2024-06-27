@@ -8,6 +8,8 @@ module Canvas.Internal.Canvas exposing
     , Shape(..)
     , Text
     , TextBox
+    , reverseDrawable
+    , reverseRenderable
     )
 
 import Canvas.Internal.CustomElementJsonApi as C exposing (Commands)
@@ -84,3 +86,29 @@ type PathSegment
     | LineTo Point
     | MoveTo Point
     | QuadraticCurveTo Point Point
+
+
+{-| Reverse the rendering order of a renderable
+-}
+reverseRenderable : Renderable -> Renderable
+reverseRenderable (Renderable r) =
+    Renderable
+        { r
+            | drawable =
+                reverseDrawable r.drawable
+        }
+
+
+{-| Reverse the rendering order of a drawable
+-}
+reverseDrawable : Drawable -> Drawable
+reverseDrawable drawable =
+    case drawable of
+        DrawableShapes ss ->
+            DrawableShapes (List.reverse ss)
+
+        DrawableGroup rs ->
+            DrawableGroup (List.map reverseRenderable (List.reverse rs))
+
+        _ ->
+            drawable

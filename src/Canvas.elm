@@ -50,7 +50,7 @@ In order to make a complex path, we need to put together a list of `PathSegment`
 import Canvas.Internal.Canvas as C exposing (..)
 import Canvas.Internal.CustomElementJsonApi as CE exposing (Commands, commands)
 import Canvas.Internal.Texture as T
-import Canvas.Path2D as Path exposing (renderShape)
+import Canvas.Path2D as Path
 import Canvas.Texture as Texture exposing (Texture)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -854,17 +854,5 @@ renderGroup drawOp renderables cmds =
 {-| Reverse the rendering order of a renderable
 -}
 reverse : Renderable -> Renderable
-reverse (Renderable r) =
-    Renderable
-        { r
-            | drawable =
-                case r.drawable of
-                    DrawableShapes ss ->
-                        DrawableShapes (List.reverse ss)
-
-                    DrawableGroup rs ->
-                        DrawableGroup (List.map reverse (List.reverse rs))
-
-                    _ ->
-                        r.drawable
-        }
+reverse =
+    C.reverseRenderable
