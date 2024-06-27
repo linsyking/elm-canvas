@@ -6,11 +6,8 @@ import Canvas exposing (..)
 import Canvas.Settings exposing (..)
 import Canvas.Settings.Line exposing (..)
 import Canvas.Settings.Text exposing (..)
-import Color exposing (Color)
+import Color
 import Html exposing (Html)
-import Html.Attributes
-import Random
-import Time exposing (Posix)
 
 
 main : Program Float Model Msg
@@ -66,9 +63,10 @@ view : Model -> Html Msg
 view model =
     Canvas.toHtml ( w, h )
         []
-        [ group []
+        [ group
+            []
             [ shapes [ fill Color.white ] [ rect ( 0, 0 ) w h ]
-            , textbox []
+            , textbox [ clip [ Canvas.circle ( 100, 0 ) 100 ] NonZero ]
                 { point = ( 100, 50 )
                 , size = ( 200, 100 )
                 , text = "Hi, this is a test. Looks like it can break a sentence into multiple lines automatically."
@@ -83,7 +81,7 @@ view model =
                 , justify = Nothing
                 }
             ]
-        , group [ fill Color.red ]
+        , group [ clip [ Canvas.circle ( 200, 200 ) 100 ] NonZero, fill Color.red ]
             [ shapes [] [ rect ( w / 4 - 20, h / 3 - 20 ) 40 40 ]
             , text
                 [ font { style = "", size = 48, family = "sans-serif" }

@@ -1,7 +1,7 @@
 module Canvas.Settings exposing
     ( Setting
     , fill, stroke
-    , clip
+    , clip, FillRule(..)
     )
 
 {-|
@@ -16,7 +16,7 @@ documented here.
 
 @docs fill, stroke
 
-@docs clip
+@docs clip, FillRule
 
 
 ## Other frequently used settings
@@ -47,6 +47,13 @@ style options for the `Renderable`s.
 -}
 type alias Setting =
     C.Setting
+
+
+{-| Fill Rule
+-}
+type FillRule
+    = NonZero
+    | EvenOdd
 
 
 {-| By default, renderables are drawn with black color. If you want to specify
@@ -102,13 +109,23 @@ stroke color =
         (Stroke <| CE.Color color)
 
 
+{-| Clip a renderable to a list of shapes.
+-}
 clip : List C.Shape -> FillRule -> Setting
 clip shapels frule =
     let
         func s =
             renderShape s []
+
+        rfrule =
+            case frule of
+                NonZero ->
+                    CE.NonZero
+
+                EvenOdd ->
+                    CE.EvenOdd
     in
     SettingCommands <|
         CE.beginPath
             :: List.concatMap func shapels
-            ++ [ CE.clip frule ]
+            ++ [ CE.clip rfrule ]

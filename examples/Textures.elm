@@ -203,7 +203,7 @@ renderSprites frame sprites =
                 smoothing =
                     imageSmoothing ((i |> modBy 2) == 0)
             in
-            texture [] ( x, y ) sprite
+            texture [ clip [ rect (x, y) 20 20 ] EvenOdd ] ( x, y ) sprite
 
         players =
             List.range 0 numOfPlayers
