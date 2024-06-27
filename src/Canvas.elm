@@ -50,6 +50,7 @@ In order to make a complex path, we need to put together a list of `PathSegment`
 import Canvas.Internal.Canvas as C exposing (..)
 import Canvas.Internal.CustomElementJsonApi as CE exposing (Commands, commands)
 import Canvas.Internal.Texture as T
+import Canvas.Path2D as Path exposing (renderShape)
 import Canvas.Texture as Texture exposing (Texture)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -640,7 +641,7 @@ renderDrawable drawable drawOp cmds =
             renderTextBox drawOp txt cmds
 
         DrawableShapes ss ->
-            List.foldl renderShape (CE.beginPath :: cmds) ss
+            List.foldl Path.renderShape (CE.beginPath :: cmds) ss
                 |> renderShapeDrawOp drawOp
 
         DrawableTexture p t ->
@@ -654,47 +655,6 @@ renderDrawable drawable drawOp cmds =
 
         DrawableEmpty ->
             cmds
-
-
-renderShape : Shape -> Commands -> Commands
-renderShape shape cmds =
-    case shape of
-        Rect ( x, y ) w h ->
-            CE.rect x y w h :: CE.moveTo x y :: cmds
-
-        RoundRect ( x, y ) w h r ->
-            CE.roundRect x y w h r :: CE.moveTo x y :: cmds
-
-        Circle ( x, y ) r ->
-            CE.circle x y r :: CE.moveTo (x + r) y :: cmds
-
-        Path ( x, y ) segments ->
-            List.foldl renderLineSegment (CE.moveTo x y :: cmds) segments
-
-        Arc ( x, y ) radius startAngle endAngle anticlockwise ->
-            CE.moveTo (x + radius * cos endAngle) (y + radius * sin endAngle)
-                :: CE.arc x y radius startAngle endAngle anticlockwise
-                :: CE.moveTo (x + radius * cos startAngle) (y + radius * sin startAngle)
-                :: cmds
-
-
-renderLineSegment : PathSegment -> Commands -> Commands
-renderLineSegment segment cmds =
-    case segment of
-        ArcTo ( x, y ) ( x2, y2 ) radius ->
-            CE.arcTo x y x2 y2 radius :: cmds
-
-        BezierCurveTo ( cp1x, cp1y ) ( cp2x, cp2y ) ( x, y ) ->
-            CE.bezierCurveTo cp1x cp1y cp2x cp2y x y :: cmds
-
-        LineTo ( x, y ) ->
-            CE.lineTo x y :: cmds
-
-        MoveTo ( x, y ) ->
-            CE.moveTo x y :: cmds
-
-        QuadraticCurveTo ( cpx, cpy ) ( x, y ) ->
-            CE.quadraticCurveTo cpx cpy x y :: cmds
 
 
 renderTextBox : DrawOp -> TextBox -> Commands -> Commands

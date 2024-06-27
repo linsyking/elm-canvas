@@ -1,6 +1,7 @@
 module Canvas.Settings exposing
     ( Setting
     , fill, stroke
+    , clip
     )
 
 {-|
@@ -14,6 +15,8 @@ The two main style settings are fill color and stroke color, which are
 documented here.
 
 @docs fill, stroke
+
+@docs clip
 
 
 ## Other frequently used settings
@@ -35,6 +38,7 @@ that return a `Setting` you can see). More specifically:
 
 import Canvas.Internal.Canvas as C exposing (..)
 import Canvas.Internal.CustomElementJsonApi as CE exposing (..)
+import Canvas.Path2D exposing (renderShape)
 import Color exposing (Color)
 
 
@@ -96,3 +100,15 @@ stroke : Color -> Setting
 stroke color =
     SettingDrawOp
         (Stroke <| CE.Color color)
+
+
+clip : List C.Shape -> FillRule -> Setting
+clip shapels frule =
+    let
+        func s =
+            renderShape s []
+    in
+    SettingCommands <|
+        CE.beginPath
+            :: List.concatMap func shapels
+            ++ [ CE.clip frule ]
