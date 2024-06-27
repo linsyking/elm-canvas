@@ -1,7 +1,7 @@
 module Canvas exposing
     ( toHtml, toHtmlWith
     , Renderable, Point, TextBox
-    , clear, shapes, text, textbox, texture, group, empty
+    , clear, shapes, text, textbox, texture, group, empty, reverse
     , Shape
     , rect, roundRect, circle, arc, path
     , PathSegment, arcTo, bezierCurveTo, lineTo, moveTo, quadraticCurveTo
@@ -23,7 +23,7 @@ requires the `elm-canvas` web component to work.
 
 @docs Renderable, Point, TextBox
 
-@docs clear, shapes, text, textbox, texture, group, empty
+@docs clear, shapes, text, textbox, texture, group, empty, reverse
 
 
 # Drawing shapes
@@ -849,3 +849,22 @@ renderGroup drawOp renderables cmds =
                     CE.fillStyleEx fc :: CE.strokeStyleEx sc :: cmds
     in
     List.foldl (renderOne drawOp) cmdsWithDraw renderables
+
+
+{-| Reverse the rendering order of a renderable
+-}
+reverse : Renderable -> Renderable
+reverse (Renderable r) =
+    Renderable
+        { r
+            | drawable =
+                case r.drawable of
+                    DrawableShapes ss ->
+                        DrawableShapes (List.reverse ss)
+
+                    DrawableGroup rs ->
+                        DrawableGroup (List.map reverse (List.reverse rs))
+
+                    _ ->
+                        r.drawable
+        }
